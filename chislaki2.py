@@ -99,9 +99,6 @@ def next_2_ord(prev, tau, sigma, t, x, h):
         b[-1] = 1 - a_const**2*tau/(h**2*2)*(-2 - beta[1]*2*h/alpha[1])
         a[-1] = - a_const**2*tau/h**2
 
-
-
-
     for i in range(1, len(x) - 1):
         a[i] = tau * a_const ** 2 * sigma / h ** 2
     for i in range(1, len(x) - 1):
