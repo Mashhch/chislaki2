@@ -16,10 +16,10 @@ def next_2_ord(prev, tau,D, a, h):
 
 h = 0.01
 a = 5
-D = 0.7
+D = 1
 x = np.arange(0, 10+h, h)
 Number_frames = 200
-tau = min(h/a, h**2/(2*D))/2
+tau = min(h/a, h**2/(2*D))/1000
 prev = [0]*len(x)
 next = [0]*len(x)
 
