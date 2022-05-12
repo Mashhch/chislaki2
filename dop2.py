@@ -8,15 +8,15 @@ from matplotlib.animation import FuncAnimation, PillowWriter
 def next_2_ord(prev, tau,D, a, h):
     next = np.zeros(len(prev))
     for i in range(1, len(prev)-1):
-        next[i] = - a*tau/(2*h)*(prev[i+1]-prev[i-1]) +1/2*(prev[i+1]-prev[i-1]) + D*tau/h**2*(prev[i+1]- 2*prev[i] +prev[i-1])
+        next[i] = - a*tau/(2*h)*(prev[i+1]-prev[i-1]) +1/2*(prev[i+1]+prev[i-1]) + D*tau/h**2*(prev[i+1]- 2*prev[i] +prev[i-1])
     next[-1] = 0
     next[0] = 0
     return next
 
 
-h = 0.025
-a = 10
-D = 0.25
+h = 0.01
+a = 5
+D = 0.7
 x = np.arange(0, 10+h, h)
 Number_frames = 200
 tau = min(h/a, h**2/(2*D))/2

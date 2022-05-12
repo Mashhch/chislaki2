@@ -32,10 +32,10 @@ def next_frame(prev, x,  h, tau, a_const, flag):
 
 
 a_const = 5
-h = 0.05
-C = 0.5
-flag = 1
-# flag =2
+h = 0.01
+C = 0.95
+# flag = 1
+flag =2
 x = np.arange(0, 10+h, h)
 Number_frames = 200
 
@@ -70,10 +70,10 @@ def animate(i):
         y = next
     else:
         prev = np.copy(next)
-        tau = (C * h) / a_const
-        # tau = (C * h) / max(a(prev, a_const, 2))
-        next = next_frame(prev, x, h, tau,  a_const, 1)
-        # next = next_frame(prev, x, h, tau, a_const, 2)
+        # tau = (C * h) / a_const
+        tau = (C * h) / max(a(prev, a_const, 2))
+        # next = next_frame(prev, x, h, tau,  a_const, 1)
+        next = next_frame(prev, x, h, tau, a_const, 2)
         y = next
 
     line1.set_data(x, y)
@@ -81,6 +81,6 @@ def animate(i):
     return line1,
 
 anim1 = FuncAnimation(fig, animate, init_func=init,
-                      frames=Number_frames, interval=80, blit=True)
+                      frames=Number_frames, interval=50, blit=True)
 
-anim1.save('number1.gif', writer='pillow')
+anim1.save('number2.gif', writer='pillow')
