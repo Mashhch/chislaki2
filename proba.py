@@ -148,9 +148,8 @@ def next(prev, prev_iter, tau, t, x, h):
 
 h = 0.01
 x_left = 0
-x_right = 20
+x_right = 5
 x = np.arange(x_left, x_right+h, h)
-x2 = np.arange(x_left, 3+h, h)
 tau = 0.01
 u = np.zeros((2, len(x)))
 u[0] = np.zeros(len(x))
@@ -175,18 +174,18 @@ def animate(i):
     y2 = np.zeros(len(x))
     if i in [0, 1]:
         y1 = u[i]
-        for j in range(len(x2)):
-            y2[j] = u_tochn(x2[j], i * tau)
+        for j in range(len(x)):
+            y2[j] = u_tochn(x[j], i * tau)
     else:
         u[0] = np.copy(u[1])
         for j in range(40):
             u[1] = next(u[0], u[1], tau, i, x, h)
         y1 = u[1]
-        for j in range(len(x2)):
-            y2[j] = u_tochn(x2[j], i * tau)
+        for j in range(len(x)):
+            y2[j] = u_tochn(x[j], i * tau)
 
     line1.set_data(x, y1)
-    line2.set_data(x, y2[:len(x)])
+    line2.set_data(x, y2)
     line1.set_color("pink")
     line2.set_color("blue")
     return line2, line1
@@ -197,5 +196,3 @@ anim1 = FuncAnimation(fig, animate,
                      frames= 200, interval=100, blit=True)
 
 anim1.save('iter.gif',  writer='pillow')
-
-
