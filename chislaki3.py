@@ -27,9 +27,7 @@ def u_tochn(x, t):
     hi = 1
     if t == 0:
         return 0
-    elif 0<=x and x <= alpha*(hi * u0**n * t**(k*n+1))**0.5:
-        dd =f(x/((hi * u0**n * t**(k*n+1))**0.5))
-        z = u0 * t**k * (f(x/((hi * u0**n * t**(k*n+1))**0.5)))**(1/n)
+    elif 0<=x and x < alpha*(hi * u0**n * t**(k*n+1))**0.5:
         return u0 * t**k * (f(x/((hi * u0**n * t**(k*n+1))**0.5)))**(1/n)
     else:
         return 0
@@ -44,6 +42,43 @@ def gamma1(t):
     u0 = 1.25
     return u0 * t**k
 
+# n = 1
+# k = 1
+# m = 1
+# alpha = 1
+# u0 = 1.25
+# hi = 1
+
+# def f(x):
+#     n = 1
+#     alpha = 6 ** 0.5
+#     if 0<= x and x<= alpha:
+#         return 1 - x
+#     else:
+#         return 0
+#
+# def u_tochn(x, t):
+#     n = 1
+#     k = 1
+#     alpha = 1
+#     u0 = 1.25
+#     hi = 1
+#     if t == 0:
+#         return 0
+#     elif 0<=x and x <= alpha*(hi * u0**n * t**(k*n+1))**0.5:
+#         return u0 * t**k * (f(x/((hi * u0**n * t**(k*n+1))**0.5)))**(1/n)
+#     else:
+#         return 0
+#
+# def lymbda(u):
+#     n = 1
+#     return u**n
+#
+#
+# def gamma1(t):
+#     k = 1
+#     u0 = 1.25
+#     return u0 * t**k
 
 def gamma2(t):
     return 0
@@ -57,19 +92,19 @@ def coeffs():
     beta = [1, 1]
     return alpha, beta
 
-def method_progonki(a,b,c,f, n):
+def method_progonki(a,b,c,d, n):
     A = np.zeros(n)
     B = np.zeros(n)
     y = np.zeros(n)
 
     A[0] = -c[0] / b[0]
-    B[0] = f[0] / b[0]
+    B[0] = d[0] / b[0]
 
     for i in range(1, n - 1):
         A[i] = -c[i] / (b[i] + a[i] * A[i - 1])
     A[-1] = 0
     for i in range(1, n):
-        B[i] = (f[i] - a[i] * B[i - 1]) / (b[i] + a[i] * A[i - 1])
+        B[i] = (d[i] - a[i] * B[i - 1]) / (b[i] + a[i] * A[i - 1])
 
     y[-1] = B[-1]
     for i in reversed(range(n-1)):
@@ -128,50 +163,38 @@ for j in range(60):
     u[1] = next(u[0], u[1], tau, 1, x, h)
 
 fig = plt.figure(1)
-ax1 = plt.axes(xlim=(x_left, x_right), ylim=(-3, 3))
+ax1 = plt.axes(xlim=(x_left-1, x_right), ylim=(-1, 3))
 line1, = ax1.plot([], [], lw=3)
+line2, = ax1.plot([], [], lw=3)
+line1.set_data([], [])
+line2.set_data([], [])
 
-def init():
-    line1.set_data([], [])
-    return line1,
-
-def init2():
-    line2.set_data([], [])
-    return line2,
 
 def animate(i):
-    if i == 0:
-        y1 = u[0]
-    elif i == 1:
-        y1 = u[1]
+    y2 = np.zeros(len(x))
+    if i in [0, 1]:
+        y1 = u[i]
+        for j in range(len(x)):
+            y2[j] = u_tochn(x[j], i * tau)
     else:
         u[0] = np.copy(u[1])
-        for j in range(60):
+        for j in range(100):
             u[1] = next(u[0], u[1], tau, i, x, h)
         y1 = u[1]
+        for j in range(len(x)):
+            y2[j] = u_tochn(x[j], i * tau)
+
     line1.set_data(x, y1)
-    line1.set_color("pink")
-    return line1,
-
-def animate2(i):
-    y2 = np.zeros(len(x))
-    for j in range(len(x)):
-        y2[j] = u_tochn(x[j], i * tau)
     line2.set_data(x, y2)
-    line2.set_color("yellow")
-    return line2,
+    line1.set_color("pink")
+    line2.set_color("blue")
+    return line2, line1
 
-anim1 = FuncAnimation(fig, animate, init_func=init,
-                     frames= 200, interval=200, blit=True)
 
-fig2 = plt.figure(2)
-ax2 = plt.axes(xlim=(x_left, x_right), ylim=(-3, 3))
-line2, = ax2.plot([], [], lw=3)
 
-anim2 = FuncAnimation(fig2, animate2, init_func=init2,
-                     frames= 200, interval=200, blit=True)
-
+anim1 = FuncAnimation(fig, animate,
+                     frames= 200, interval=100, blit=True)
 
 anim1.save('iter.gif',  writer='pillow')
-anim2.save('true.gif',  writer='pillow')
+
 
